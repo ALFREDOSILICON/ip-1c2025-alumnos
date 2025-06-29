@@ -14,11 +14,11 @@ def home(request):
     images = []
     favourite_list = []
     images = services.getAllImages()#-----------------------------------------
-    favourite_list = {}#services#.getAllFavourites() 
+
+    if request.user.is_authenticated:
+        favourite_list = services.getAllFavourites(request)  # obtiene favoritos como cards
+
     return render(request, 'home.html', { 'images': images, 'favourite_list': favourite_list })
-
-
-
 
 # función utilizada en el buscador.
 def search(request):
@@ -27,15 +27,12 @@ def search(request):
     # si el usuario ingresó algo en el buscador, se deben filtrar las imágenes por dicho ingreso.
     if (name != ''):
         images = []
+        images = services.filterByCharacter(name)####
         favourite_list = []
 
         return render(request, 'home.html', { 'images': images, 'favourite_list': favourite_list })
     else:
         return redirect('home')
-
-
-
-
 
 # función utilizada para filtrar por el tipo del Pokemon
 def filter_by_type(request):
@@ -43,25 +40,19 @@ def filter_by_type(request):
 
     if type != '':
         images = [] # debe traer un listado filtrado de imágenes, segun si es o contiene ese tipo.
+        images = services.filterByType(type)#####
         favourite_list = []
-
-        #images = services.getAllImages()#-----------------------------------------
-        #favourite_list = {}#services#.getAllFavourites() 
-
-
 
         return render(request, 'home.html', { 'images': images, 'favourite_list': favourite_list })
     else:
         return redirect('home')
 
 
-
-
-
 # Estas funciones se usan cuando el usuario está logueado en la aplicación.
 @login_required
 def getAllFavouritesByUser(request):
     pass
+
 
 @login_required
 def saveFavourite(request):

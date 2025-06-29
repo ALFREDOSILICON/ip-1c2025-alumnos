@@ -12,6 +12,7 @@
         </form>
     </div>
 
+
     <div class="d-flex gap-1 col-2 mx-auto mb-3">
         <form method="post" action="{% url 'filter_by_type' %}">
             {% csrf_token %}
@@ -40,11 +41,12 @@
         <div class="col">
             <!-- evaluar si la imagen pertenece al tipo fuego, agua o planta -->
 
-            {# Línea original comentada: borde fijo verde #}
+           
             {# <div class="card border-success mb-3 ms-5" style="max-width: 540px;"> #}
-            {# ------------------------------------------------------------------------------------------------------- #}			
+
+            {# --------------   2do   parametro trabajado   ----------------------------------------------------------- #}			
 			
-            <!-- NUEVA línea: clase de borde condicional según el tipo -->
+           
             <div class="card 
                 {% if 'fire' in img.types %}
                     border-danger
@@ -56,7 +58,10 @@
                     border-secondary
                 {% endif %}
                 mb-3 ms-5" style="max-width: 540px;">
+
             {# ------------------------------------------------------------------------------------------------------- #}
+
+
                 <div class="row g-0">
                     <div class="col-md-4">
                         <img src="{{ img.image }}" class="card-img-top" alt="imagen">
