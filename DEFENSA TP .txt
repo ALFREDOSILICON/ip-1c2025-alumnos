@@ -1,6 +1,6 @@
 
 
-								INTRODUCCION A LA PROGRAMACION   COM 09
+											INTRODUCCION A LA PROGRAMACION   COM 09							
 
 
 Trabajo que tiene como objetivo completar  una aplicación web segun especificaciones.
