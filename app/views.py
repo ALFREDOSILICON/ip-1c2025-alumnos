@@ -10,15 +10,25 @@ def index_page(request):
 
 
 # esta función obtiene 2 listados: uno de las imágenes de la API y otro de favoritos, ambos en formato Card, y los dibuja en el template 'home.html'.
+
 def home(request):
     images = []
     favourite_list = []
-    images = services.getAllImages()#-----------------------------------------
+    images = services.getAllImages()
 
     if request.user.is_authenticated:
-        favourite_list = services.getAllFavourites(request)  # obtiene favoritos como cards
+        favourite_list = services.getAllFavourites(request)
+        favourite_names = [fav.name for fav in favourite_list]  # ← esto extrae solo los nombres
+    else:
+        favourite_names = []
 
-    return render(request, 'home.html', { 'images': images, 'favourite_list': favourite_list })
+    return render(request, 'home.html', { 
+        'images': images, 
+        'favourite_list': favourite_list,
+        'favourite_names': favourite_names  # ← lo pasas al template
+    })
+
+
 
 # función utilizada en el buscador.
 def search(request):
@@ -47,20 +57,26 @@ def filter_by_type(request):
     else:
         return redirect('home')
 
-
-# Estas funciones se usan cuando el usuario está logueado en la aplicación.
-@login_required
-def getAllFavouritesByUser(request):
-    pass
-
+from .layers.utilities import translator
 
 @login_required
 def saveFavourite(request):
-    pass
+    if request.method == 'POST':
+        fav = translator.fromTemplateIntoCard(request)  # Transformamos el POST en una Card
+        fav.user = request.user  # Asignamos el usuario autenticado
+        services.saveFavourite(fav)  # Guardamos con lógica de negocio
+    return redirect('home')
+
+@login_required
+def getAllFavouritesByUser(request):
+    favourite_list = services.getAllFavourites(request)  # Trae lista de favoritos como cards
+    return render(request, 'favourites.html', { 'favourite_list': favourite_list })
 
 @login_required
 def deleteFavourite(request):
-    pass
+    if request.method == 'POST':
+        services.deleteFavourite(request)
+    return redirect('favoritos')
 
 @login_required
 def exit(request):

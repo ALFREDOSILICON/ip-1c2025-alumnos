@@ -23,23 +23,35 @@ def getTypes(poke_data):
         types.append(t)
     return types
 
-# Usado cuando la información viene del template, para transformarla en una Card antes de guardarla en la base de datos.
+
 def fromTemplateIntoCard(templ): 
     card = Card(
         name=templ.POST.get("name"),
         id=templ.POST.get("id"),
         height=templ.POST.get("height"),
         weight=templ.POST.get("weight"),
-        types=templ.POST.get("types"),
+        types=templ.POST.get("types"),  # ← CAMBIAR
         base=templ.POST.get("base"),
         image=templ.POST.get("image")
     )
+
+    # Convierte el string de lista a lista real si es necesario
+    if isinstance(card.types, str):
+        try:
+            card.types = ast.literal_eval(card.types)
+        except Exception:
+            card.types = [card.types]
     return card
 
-
-# Cuando la información viene de la base de datos, para transformarla en una Card antes de mostrarla.
 def fromRepositoryIntoCard(repo_dict):
-    types_list = ast.literal_eval(repo_dict['types'])
+    raw_types = repo_dict['types']
+
+    # Si es string, conviértelo a lista con ast.literal_eval
+    if isinstance(raw_types, str):
+        types_list = ast.literal_eval(raw_types)
+    else:
+        types_list = raw_types  # ya es lista, no hacer nada
+
     return Card(
         id=repo_dict.get('id'),
         name=repo_dict.get('name'),
@@ -50,6 +62,7 @@ def fromRepositoryIntoCard(repo_dict):
         image=repo_dict.get('image')
     )
 
+ 
 def safe_get(dic, *keys):
     for key in keys:
         if not isinstance(dic, dict):

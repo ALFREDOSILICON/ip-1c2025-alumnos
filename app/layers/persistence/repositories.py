@@ -6,7 +6,7 @@ from app.models import Favourite
 
 def save_favourite(fav):
     try:
-        fav = Favourite.objects.create(
+        fav = Favourite.objects.create(    
             name=fav.name,  # Nombre del personaje
             id=fav.id,
             types=fav.types,  # tipos
@@ -41,3 +41,7 @@ def delete_favourite(fav_id):
     except Exception as e:
         print(f"Error al eliminar el favorito: {e}")
         return False
+    
+    #---------------aqui---------------------------
+def get_favourite_by_user_and_name(user, name):
+    return Favourite.objects.filter(user=user, name=name).first()
