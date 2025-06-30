@@ -29,7 +29,6 @@ def home(request):
     })
 
 
-
 # función utilizada en el buscador.
 def search(request):
     name = request.POST.get('query', '')
@@ -47,7 +46,7 @@ def search(request):
 # función utilizada para filtrar por el tipo del Pokemon
 def filter_by_type(request):
     type = request.POST.get('type', '')
-
+      
     if type != '':
         images = [] # debe traer un listado filtrado de imágenes, segun si es o contiene ese tipo.
         images = services.filterByType(type)#####
@@ -58,7 +57,7 @@ def filter_by_type(request):
         return redirect('home')
 
 from .layers.utilities import translator
-
+   
 @login_required
 def saveFavourite(request):
     if request.method == 'POST':
@@ -71,7 +70,7 @@ def saveFavourite(request):
 def getAllFavouritesByUser(request):
     favourite_list = services.getAllFavourites(request)  # Trae lista de favoritos como cards
     return render(request, 'favourites.html', { 'favourite_list': favourite_list })
-
+  
 @login_required
 def deleteFavourite(request):
     if request.method == 'POST':

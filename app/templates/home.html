@@ -1,32 +1,39 @@
-
-{% extends 'header.html' %} {% block content %}
+{% extends 'header.html' %}
+{% block content %}
 <main>
+
+
+    {# 🟡 SPINNER SIMPLE: mensaje de carga oculto inicialmente #}
+    <div id="simple-spinner" style="display: none; text-align: center; font-weight: bold; font-size: 1.5rem; margin-bottom: 15px;">
+        ESPERANDO<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
+    </div>
+
+
+
     <h1 class="text-center">Buscador de Pokemon</h1>
 
     <div class="d-flex justify-content-center" style="margin-bottom: 1%">
-        <!-- Buscador del sitio -->
-        <form class="d-flex" action="{% url 'buscar' %}" method="POST">
+        <form class="d-flex show-spinner-on-submit" action="{% url 'buscar' %}" method="POST">
             {% csrf_token %}
             <input class="form-control me-2" type="search" name="query" placeholder="Pikachu, Charizard, Ditto" aria-label="Search">
             <button class="btn btn-outline-success" type="submit">Buscar</button>
         </form>
     </div>
 
-    
-    <div class="d-flex gap-1 col-2 mx-auto mb-3">    
-        <form method="post" action="{% url 'filter_by_type' %}">
+    <div class="d-flex gap-1 col-2 mx-auto mb-3">
+        <form method="post" action="{% url 'filter_by_type' %}" class="show-spinner-on-submit">
             {% csrf_token %}
             <input type="hidden" name="type" value="fire">
             <button type="submit" class="btn btn-danger">FUEGO</button>
         </form>
 
-        <form method="post" action="{% url 'filter_by_type' %}">
+        <form method="post" action="{% url 'filter_by_type' %}" class="show-spinner-on-submit">
             {% csrf_token %}
             <input type="hidden" name="type" value="water">
             <button type="submit" class="btn btn-primary">AGUA</button>
         </form>
 
-        <form method="post" action="{% url 'filter_by_type' %}">
+        <form method="post" action="{% url 'filter_by_type' %}" class="show-spinner-on-submit">
             {% csrf_token %}
             <input type="hidden" name="type" value="grass">
             <button type="submit" class="btn btn-success">PLANTA</button>
@@ -39,14 +46,6 @@
         {% else %}
         {% for img in images %}
         <div class="col">
-            <!-- evaluar si la imagen pertenece al tipo fuego, agua o planta -->
-
-           
-            {# <div class="card border-success mb-3 ms-5" style="max-width: 540px;"> #}
-
-            {# --------------   2do   parametro trabajado   ----------------------------------------------------------- #}			
-			
-           
             <div class="card 
                 {% if 'fire' in img.types %}
                     border-danger
@@ -58,9 +57,6 @@
                     border-secondary
                 {% endif %}
                 mb-3 ms-5" style="max-width: 540px;">
-
-            {# ------------------------------------------------------------------------------------------------------- #}
-
 
                 <div class="row g-0">
                     <div class="col-md-4">
@@ -85,23 +81,22 @@
                             <p class="card-text"><small class="text-body-secondary">Peso: {{ img.weight }}</small></p>
                             <p class="card-text"><small class="text-body-secondary">Nivel de experiencia base: {{ img.base }}</small></p>
                         </div>
+
                         {% if request.user.is_authenticated %}
                         <div class="card-footer text-center">
-                            <form method="post" action="{% url 'agregar-favorito' %}">
+                            <form method="post" action="{% url 'agregar-favorito' %}" class="show-spinner-on-submit">
                                 {% csrf_token %}
                                 <input type="hidden" name="name" value="{{ img.name }}">
                                 <input type="hidden" name="height" value="{{ img.height }}">
                                 <input type="hidden" name="weight" value="{{ img.weight }}">
                                 <input type="hidden" name="types" value="{{ img.types }}">
                                 <input type="hidden" name="image" value="{{ img.image }}">
- 
-                            
-                                {% if img.name in favourite_names %}   {# aqui #}
-                                <button type="submit" class="btn btn-primary btn-sm float-left" style="color:white" disabled>✔️ Guardado</button> {# aqui #}
+
+                                {% if img.name in favourite_names %}
+                                <button type="submit" class="btn btn-primary btn-sm float-left" style="color:white" disabled>✔️ Guardado</button>
                                 {% else %}
                                 <button type="submit" class="btn btn-primary btn-sm float-left" style="color:white">❤️ Favoritos</button>
                                 {% endif %}
-
                             </form>
                         </div>
                         {% endif %}
@@ -109,7 +104,21 @@
                 </div>
             </div>
         </div>
-        {% endfor %}{% endif %}
+        {% endfor %}
+        {% endif %}
     </div>
+
+
+    
+    {# 🟡 SCRIPT SIMPLE PARA MOSTRAR EL SPINNER #}
+    <script>
+        // Mostrar el mensaje "ESPERANDO..." al enviar formularios específicos
+        document.querySelectorAll('form.show-spinner-on-submit').forEach(form => {
+            form.addEventListener('submit', () => {
+                document.getElementById('simple-spinner').style.display = 'block';
+            });
+        });
+    </script>
+
 </main>
 {% endblock %}

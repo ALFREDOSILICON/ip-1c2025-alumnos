@@ -46,7 +46,7 @@ def filterByType(type_filter):
             filtered_cards.append(card)
 
     return filtered_cards
-
+   
 
 from ..persistence import repositories
 
@@ -74,10 +74,9 @@ def getAllFavourites(request):
             mapped_favourites.append(card)
 
         return mapped_favourites
-
-
+      
 ##----------------------------------------------------------------------------
-
+      
 def deleteFavourite(request):
     favId = request.POST.get('id')
     return repositories.delete_favourite(favId) # borramos un favorito por su ID

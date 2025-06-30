@@ -1,0 +1,143 @@
+
+
+								INTRODUCCION A LA PROGRAMACION   COM 09
+
+
+Trabajo que tiene como objetivo completar  una aplicación web segun especificaciones.
+
+												Introducción
+
+El sistema ya contaba con una estructura base,lo que se buscó fue implementar codigo sobre los  tipos basicos (por ejemplo: fuego, agua o planta),  cambiar su borde , para mejor visualizacion 
+y "activar" ciertos botones de búsqueda y de personalizar la presentación gráfica.
+
+
+ //--------------------------------------------------------------------------111------------------------------------------------------------------------------------------------------------------
+ 1. Cambios realizados en el módulo views.py
+	Código agregado:primera eatpa
+  
+	images = services.getAllImages()
+
+	if request.user.is_authenticated:
+		favourite_list = services.getAllFavourites(request)  # obtiene favoritos como cards
+
+	
+	>getAllImages(): 		Se utiliza para traer todas las imágenes inicialmente desde la API.	
+	>getAllFavourites(): 	Si el usuario está autenticado, se muestran sus tarjetas favoritas.	
+	
+
+//--------------------------------------------------------------------------------111  bbbb   ---------------------------------------------------------------------------------
+2. Cambios realizados en el módulo services.py
+	Código agregado:primera eatpa
+	Obtener todas las imágenes y convertirlas en tarjetas:
+   
+	listaimagenes = transport.getAllImages()
+	listadoCARDS = []
+
+	for elen in listaimagenes:
+		card = translator.fromRequestIntoCard(elen)
+		listadoCARDS.append(card)
+ 
+ 
+ 
+//---------------------------------------------------------------------------2222----------------------------------------------------------------------------------------------------------------- 
+Cambios realizados en home.html (parte visual de las tarjetas)
+Código HTML agregado:
+
+<div class="card 
+    {% if 'fire' in img.types %}
+        border-danger
+    {% elif 'water' in img.types %}
+        border-primary
+    {% elif 'grass' in img.types %}
+        border-success
+    {% else %}
+        border-secondary
+    {% endif %}
+    mb-3 ms-5" style="max-width: 540px;">
+	
+Explicación:
+Según el tipo de la tarjeta, se cambia el color del borde:
+Fuego: rojo  
+Agua: azul  
+Planta: verde 
+Otros: gris  
+
+Justificación:
+Esto mejora la experiencia visual del usuario, ya que permite identificar rápidamente las tarjetas por su tipo, sin necesidad de leer cada detalle.
+
+//-------------------------------------------------------------------------3333-------------------------------
+
+1. Cambios realizados en el módulo views.py
+	segunda etapa
+  
+	images = services.filterByCharacter(name)  # "activar" el botón de búsqueda por nombre
+	images = services.filterByType(type)       # "activar" el botón de búsqueda por tipo
+	Explicación:
+
+filterByCharacter(name): Filtra las tarjetas para mostrar sólo aquellas que contienen el nombre ingresado por el usuario.
+
+filterByType(type): Filtra las tarjetas por tipo (por ejemplo, fuego, agua, planta).
+
+Justificación:
+Estas funciones se integraron para permitir la búsqueda y el filtrado interactivo en la galería.
+
+//-------------------------------------------------------------------------4444--------------------------------------------------
+
+Cambios realizados en el módulo services.py
+
+	Filtrar por nombre:segunda eatpa
+	
+	if name.lower() in card.name.lower():
+    filtered_cards.append(card)
+	
+	
+	
+	Filtrar por tipo: 
+	
+	if type_filter.lower() in [t.lower() for t in card.types]:
+    filtered_cards.append(card)
+	
+	
+	
+Explicación:
+Primero se obtiene una lista de imágenes "crudas" desde la API (sin procesar).
+
+Luego se convierten en tarjetas visuales mediante un traductor.
+
+Se filtran según si el nombre ingresado está dentro del nombre de la tarjeta.
+
+También se filtran si el tipo de la tarjeta coincide con el tipo buscado.
+
+Justificación:
+ Sin estas funciones, los botones de búsqueda en la interfaz no podrían tener efecto.
+
+//---------------------------------------------------------------------------------------------------------------------------------
+luego , se agrego codigo para que , SITO, segun lo pedido en el TP: "permitir que un usuario logueado pueda almacenar una o varias imágenes de la galería como favoritas
+mediante el clic de un botón en la parte inferior.
+Si el favorito ya fue añadido, debe mostrarse un botón que impida reañadirlo.
+Debe existir una sección llamada 'Favoritos' que permita listar todos los agregados por el usuario . 
+Además, debe existir un botón que permita eliminarlo del listado ( si fue eliminado, desde la galería de imágenes podrá ser agregada otra vez )."
+
+se agrego un comando en repositories.py
+
+se cambio una linea de codigo en home.html	-> es para el cambi de texto en boton
+
+en services.py se completaron funciones, prearmadas
+
+lomismo en views.py
+//----------------------------------------------------------------------------------------------------------------------------------------
+y para ceerrar, se agrego un Spinner basico(no animado), un texto durante la carga/busqueda
+
+en home.html    al principio para establecer el TEXTO
+
+y al final codigo para que se ejecute
+//--------------------------------------------------------------------------------------------------------------------------------------
+Conclusión
+En resumen, el trabajo consistió en completar e integrar funcionalidades, que mejoran tanto la usabilidad como la presentación de la galería de tarjetas. Activandolos  filtros por nombre y tipo, para mejorar el 
+estilo visual según el tipo de cada tarjeta.
+
+se trabajo sobre:translator.py, repositories.py,home.html, services.py, views.py
+y se observo :favourites.py,urls.py
+
+
+.........................................
